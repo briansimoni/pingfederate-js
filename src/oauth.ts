@@ -1,9 +1,11 @@
+import { PingClient } from './ping_client';
+
 export interface OAuthClient {
-  clientId?: string;
+  clientId: string;
   enabled?: boolean;
   redirectUris?: string[];
-  grantTypes?: string[];
-  name?: string;
+  grantTypes: string[];
+  name: string;
   description?: string;
   logoUrl?: string;
   defaultAccessTokenManagerRef?: DefaultAccessTokenManagerRef;
@@ -69,4 +71,49 @@ export interface OidcPolicy {
   grantAccessSessionRevocationApi?: boolean;
   pingAccessLogoutCapable?: boolean;
   logoutUris?: string[];
+}
+
+export interface ClientSecret {
+  secret?: string;
+  encryptedSecret?: string;
+}
+
+export class OAuthClientService {
+  private pingClient: PingClient
+
+  constructor(pingClient: PingClient) {
+    this.pingClient = pingClient;
+  }
+
+  async getClient(clientId: string) {
+    let client: OAuthClient;
+    client = await this.pingClient.makeRequest('GET', `/oauth/clients/${clientId}`);
+    return client;
+  }
+
+  async createClient(client: OAuthClient) {
+    client = await this.pingClient.makeRequest('POST', `/oauth/clients/`, client);
+    return client;
+  }
+
+  async deleteClient(clientId: string) {
+    await this.pingClient.makeRequest('DELETE', `/oauth/clients/${clientId}`);
+  }
+
+  async updateClient(client: OAuthClient) {
+    let updatedClient: OAuthClient;
+    updatedClient = await this.pingClient.makeRequest('PUT', `/oauth/clients/${client.clientId}`, client);
+    return updatedClient;
+  }
+
+  async getClientSecret(clientId: string) {
+    let clientSecret: ClientSecret
+    clientSecret = await this.pingClient.makeRequest('GET', `/oauth/clients/${clientId}/clientAuth/clientSecret`);
+    return clientSecret;
+  }
+
+  async updateClientSecret(clientId: string, secret: ClientSecret) {
+    secret = await this.pingClient.makeRequest('PUT', `/oauth/clients/${clientId}/clientAuth/clientSecret`, secret);
+    return secret;
+  }
 }

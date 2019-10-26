@@ -1,9 +1,10 @@
+import { PingClient } from './ping_client';
 export interface OAuthClient {
-    clientId?: string;
+    clientId: string;
     enabled?: boolean;
     redirectUris?: string[];
-    grantTypes?: string[];
-    name?: string;
+    grantTypes: string[];
+    name: string;
     description?: string;
     logoUrl?: string;
     defaultAccessTokenManagerRef?: DefaultAccessTokenManagerRef;
@@ -63,4 +64,18 @@ export interface OidcPolicy {
     grantAccessSessionRevocationApi?: boolean;
     pingAccessLogoutCapable?: boolean;
     logoutUris?: string[];
+}
+export interface ClientSecret {
+    secret?: string;
+    encryptedSecret?: string;
+}
+export declare class OAuthClientService {
+    private pingClient;
+    constructor(pingClient: PingClient);
+    getClient(clientId: string): Promise<OAuthClient>;
+    createClient(client: OAuthClient): Promise<OAuthClient>;
+    deleteClient(clientId: string): Promise<void>;
+    updateClient(client: OAuthClient): Promise<OAuthClient>;
+    getClientSecret(clientId: string): Promise<ClientSecret>;
+    updateClientSecret(clientId: string, secret: ClientSecret): Promise<ClientSecret>;
 }

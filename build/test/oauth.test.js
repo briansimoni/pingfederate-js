@@ -8,4 +8,4 @@ async function test() {
     console.log(thing);
 }
 test();
-//# sourceMappingURL=index.test.js.map
+//# sourceMappingURL=oauth.test.js.map
